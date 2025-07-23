@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BookUpdateDto {
     private String description;
-    private int price;
-    private int stock;
-
+    private Integer price;
+    private Integer stock;
 }

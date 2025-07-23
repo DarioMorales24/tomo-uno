@@ -33,16 +33,16 @@ public class Book {
     private String description;
 
     @Column (nullable = false)
-    private int pages;
+    private Integer pages;
 
     @Column (nullable = false)
-    private int year;
+    private Integer year;
 
     @Column (nullable = false)
-    private int price;
+    private Integer price;
 
     @Column (nullable = false)
-    private int stock;
+    private Integer stock;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookCategory> categories;
