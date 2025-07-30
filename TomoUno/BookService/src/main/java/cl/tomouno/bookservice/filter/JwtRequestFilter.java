@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -44,6 +45,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 logger.warn("Expired JWT token");
             } catch (Exception e) {
                 logger.warn("Invalid JWT token");
+            }
+        }
+
+        // Si tenemos el username y el contexto no está autenticado
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (jwtUtil.isTokenValid(jwtToken)) {
+                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                        new User(username, "", Collections.emptyList()), null , Collections.emptyList()
+                );
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
 

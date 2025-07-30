@@ -40,9 +40,9 @@ public class JwtUtil {
                 .getBody();
     }
 
-    public boolean isTokenValid(String token, String username) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         final String tokenUsename = extractUsername(token);
-        return (tokenUsename.equals(username) && !isTokenExpired(token));
+        return (tokenUsename.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {
@@ -53,8 +53,8 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public String generateToken(String username) {
-        return Jwts.builder().setSubject(username)
+    public String generateToken(UserDetails userDetails) {
+        return Jwts.builder().setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_MS))
                 .signWith(getSinginKey(), SignatureAlgorithm.HS256)

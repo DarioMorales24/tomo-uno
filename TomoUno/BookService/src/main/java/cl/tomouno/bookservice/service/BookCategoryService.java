@@ -32,6 +32,10 @@ public class BookCategoryService {
         return book.orElse(null);
     }
 
+    public Book findByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn);
+    }
+
     public void save(BookRequestDto dto) {
         Book book = new Book();
         book.setId(UUID.randomUUID());
@@ -64,7 +68,7 @@ public class BookCategoryService {
         bookRepository.save(bookExists);
     }
 
-    public void partialUpdate(UUID id,BookRequestDto dto) {
+    public void partialUpdateById(UUID id,BookRequestDto dto) {
         Book bookExists = findById(id);
 
         if (dto.getTitle() != null) {
@@ -91,8 +95,42 @@ public class BookCategoryService {
         bookRepository.save(bookExists);
     }
 
-    public void delete(UUID id) {
+    public void PartialUpdateByIsbn(String isbn, BookRequestDto dto){
+        Book bookExists = findByIsbn(isbn);
+
+        if (dto.getTitle() != null) {
+            bookExists.setTitle(dto.getTitle());
+        }
+        if (dto.getAuthor() != null) {
+            bookExists.setAuthor(dto.getAuthor());
+        }
+        if (dto.getIsbn() != null) {
+            bookExists.setIsbn(dto.getIsbn());
+        }
+        if (dto.getDescription() != null) {
+            bookExists.setDescription(dto.getDescription());
+        }
+        if (dto.getPages() != null) {
+            bookExists.setPages(dto.getPages());
+        }
+        if (dto.getPrice() != null) {
+            bookExists.setPrice(dto.getPrice());
+        }
+        if (dto.getStock() != null) {
+            bookExists.setStock(dto.getStock());
+        }
+        bookRepository.save(bookExists);
+    }
+
+    public void deleteById(UUID id) {
         Optional<Book> book = bookRepository.findById(id);
+        if (book.isPresent()) {
+            bookRepository.delete(book.get());
+        }
+    }
+
+    public void deleteByIsbn(String isbn) {
+        Optional<Book> book = Optional.ofNullable(bookRepository.findByIsbn(isbn));
         if (book.isPresent()) {
             bookRepository.delete(book.get());
         }
